@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="table-container">
+        <h2 class="mb-4">Мероприятия</h2>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Время</th>
+                    <th>Место</th>
+                    <th>Название</th>
+                    <th>Ответственный</th>
+                    <th>Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for event in events %}
+                    <tr>
+                        <td>{{ event.date|date('d.m.Y') }}</td>
+                        <td>{{ event.time|date('H:i') }}</td>
+                        <td>{{ event.place }}</td>
+                        <td>{{ event.title }}</td>
+                        <td>{{ event.responsible }}</td>
+                        <td>
+                            <a href="{{ path('event_edit', {'id': event.id}) }}" class="btn btn-sm btn-outline-primary">✎</a>
+                            <form method="post" action="{{ path('event_delete', {'id': event.id}) }}" style="display:inline-block;" onsubmit="return confirm('Удалить?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+                                <button class="btn btn-sm btn-outline-danger">🗑</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="6" class="text-center">Нет мероприятий</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">{{ title }}</div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+                    {{ form_row(form.email) }}
+                    {{ form_row(form.fullName) }}
+                    {{ form_row(form.department) }}
+                    {{ form_row(form.roles) }}
+                    {{ form_row(form.isActive) }}
+                    {% if form.plainPassword is defined %}
+                        {{ form_row(form.plainPassword) }}
+                    {% endif %}
+                    <button class="btn btn-primary">{{ title }}</button>
+                    <a href="{{ path('admin_users') }}" class="btn btn-secondary">Назад</a>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
