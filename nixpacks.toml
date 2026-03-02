@@ -18,8 +18,8 @@ cmds = [
   "echo '[www]' > /etc/php-fpm.d/www.conf",
   "echo 'listen = 127.0.0.1:9000' >> /etc/php-fpm.d/www.conf",
   "echo 'listen.allowed_clients = 127.0.0.1' >> /etc/php-fpm.d/www.conf",
-  "echo 'user = nobody' >> /etc/php-fpm.d/www.conf",
-  "echo 'group = nobody' >> /etc/php-fpm.d/www.conf",
+  "echo 'user = www-data' >> /etc/php-fpm.d/www.conf",           # Изменено
+  "echo 'group = www-data' >> /etc/php-fpm.d/www.conf",          # Изменено
   "echo 'pm = dynamic' >> /etc/php-fpm.d/www.conf",
   "echo 'pm.max_children = 5' >> /etc/php-fpm.d/www.conf",
   "echo 'pm.start_servers = 2' >> /etc/php-fpm.d/www.conf",
