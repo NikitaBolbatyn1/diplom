@@ -1,2 +1,3 @@
 [php]
 extensions = ["pdo_mysql", "gd", "zip"]
+version = "8.2"  # или 8.3, какая версия вам нужна
