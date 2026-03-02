@@ -23,7 +23,7 @@ cmds = [
   "echo 'pm.max_children = 5' >> /etc/php-fpm.d/www.conf",
   "echo 'pm.start_servers = 2' >> /etc/php-fpm.d/www.conf",
   "echo 'pm.min_spare_servers = 1' >> /etc/php-fpm.d/www.conf",
-  "echo 'pm.max_spare_servers = 3' >> /etc/php-fpm.d/www.conf"
+  "echo 'pm.max_spare_servers = 3' >> /etc/php-fpm.d/www.conf",
   "echo 'fastcgi_param  QUERY_STRING       $query_string;' > /etc/nginx/fastcgi_params",
   "echo 'fastcgi_param  REQUEST_METHOD     $request_method;' >> /etc/nginx/fastcgi_params",
   "echo 'fastcgi_param  CONTENT_TYPE       $content_type;' >> /etc/nginx/fastcgi_params",
