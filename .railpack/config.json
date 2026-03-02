@@ -1,8 +1,0 @@
-{
-    "extensions": ["gd"],
-    "composer": {
-        "install": {
-            "flags": ["--no-dev", "--optimize-autoloader", "--no-scripts", "--no-interaction"]
-        }
-    }
-}
