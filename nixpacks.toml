@@ -3,7 +3,7 @@ extensions = ["pdo_mysql", "gd", "zip"]
 version = "8.1"
 
 [phases.setup]
-nixPkgs = ["php81", "php81Extensions.pdo_mysql", "php81Extensions.gd", "php81Extensions.zip"]
+nixPkgs = ["php81", "php81Extensions.pdo_mysql", "php81Extensions.gd", "php81Extensions.zip", "nginx"]
 
 [phases.install]
 cmds = [
