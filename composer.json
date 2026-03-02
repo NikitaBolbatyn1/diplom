@@ -29,7 +29,11 @@
         "allow-plugins": {
             "symfony/flex": true,
             "symfony/runtime": true
-        }
+        },
+        "platform": {
+            "ext-gd": true
+        },
+        "sort-packages": true
     },
     "autoload": {
         "psr-4": {
