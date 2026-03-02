@@ -3,7 +3,7 @@
         "builder": "NIXPACKS"
     },
     "deploy": {
-        "startCommand": "php-fpm -F -y /etc/php-fpm.conf & nginx -c /app/nginx.conf -g 'daemon off;'",
+        "startCommand": "cp /app/nginx.conf /nginx.conf && php-fpm -y /assets/php-fpm.conf & nginx -c /nginx.conf",
         "healthcheckPath": "/info.php",
         "healthcheckTimeout": 300
     }
