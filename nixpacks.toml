@@ -7,284 +7,283 @@ nixPkgs = ["php81", "php81Extensions.pdo_mysql", "php81Extensions.gd", "php81Ext
 
 [phases.install]
 cmds = [
-  # Создание всех необходимых директорий
-  "mkdir -p /etc/php-fpm.d",
-  "mkdir -p /var/log/nginx",
-  "mkdir -p /var/lib/nginx",
-  "mkdir -p /etc/nginx",
-  "mkdir -p /run/php-fpm",
-  "mkdir -p /tmp/php-sessions",
-  "mkdir -p /var/www/html",
+  # Создание всех необходимых директорий одной командой
+  "mkdir -p /etc/php-fpm.d /var/log/nginx /var/lib/nginx /etc/nginx /run/php-fpm /tmp/php-sessions /var/www/html",
 
-  # Конфигурация PHP-FPM
-  "echo '[global]' > /etc/php-fpm.conf",
-  "echo 'pid = /run/php-fpm/php-fpm.pid' >> /etc/php-fpm.conf",
-  "echo 'error_log = /var/log/php-fpm.log' >> /etc/php-fpm.conf",
-  "echo 'log_level = notice' >> /etc/php-fpm.conf",
-  "echo 'include=/etc/php-fpm.d/*.conf' >> /etc/php-fpm.conf",
+  # Генерация всех конфигурационных файлов одним блоком
+  "cat > /etc/php-fpm.conf << 'EOF'
+[global]
+pid = /run/php-fpm/php-fpm.pid
+error_log = /var/log/php-fpm.log
+log_level = notice
+include=/etc/php-fpm.d/*.conf
+EOF",
 
-  # Пул www
-  "echo '[www]' > /etc/php-fpm.d/www.conf",
-  "echo 'user = www-data' >> /etc/php-fpm.d/www.conf",
-  "echo 'group = www-data' >> /etc/php-fpm.d/www.conf",
-  "echo 'listen = 127.0.0.1:9000' >> /etc/php-fpm.d/www.conf",
-  "echo 'listen.backlog = 65535' >> /etc/php-fpm.d/www.conf",
-  "echo 'listen.allowed_clients = 127.0.0.1' >> /etc/php-fpm.d/www.conf",
-  "echo 'pm = dynamic' >> /etc/php-fpm.d/www.conf",
-  "echo 'pm.max_children = 50' >> /etc/php-fpm.d/www.conf",
-  "echo 'pm.start_servers = 5' >> /etc/php-fpm.d/www.conf",
-  "echo 'pm.min_spare_servers = 5' >> /etc/php-fpm.d/www.conf",
-  "echo 'pm.max_spare_servers = 10' >> /etc/php-fpm.d/www.conf",
-  "echo 'pm.max_requests = 500' >> /etc/php-fpm.d/www.conf",
-  "echo 'chdir = /' >> /etc/php-fpm.d/www.conf",
-  "echo 'catch_workers_output = yes' >> /etc/php-fpm.d/www.conf",
-  "echo 'php_flag[display_errors] = off' >> /etc/php-fpm.d/www.conf",
-  "echo 'php_admin_value[error_log] = /var/log/php-fpm-www.log' >> /etc/php-fpm.d/www.conf",
-  "echo 'php_admin_flag[log_errors] = on' >> /etc/php-fpm.d/www.conf",
+  "cat > /etc/php-fpm.d/www.conf << 'EOF'
+[www]
+user = www-data
+group = www-data
+listen = 127.0.0.1:9000
+listen.backlog = 65535
+listen.allowed_clients = 127.0.0.1
+pm = dynamic
+pm.max_children = 50
+pm.start_servers = 5
+pm.min_spare_servers = 5
+pm.max_spare_servers = 10
+pm.max_requests = 500
+chdir = /
+catch_workers_output = yes
+php_flag[display_errors] = off
+php_admin_value[error_log] = /var/log/php-fpm-www.log
+php_admin_flag[log_errors] = on
+EOF",
 
-  # Создание fastcgi_params
-  "echo 'fastcgi_param  QUERY_STRING       $query_string;' > /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  REQUEST_METHOD     $request_method;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  CONTENT_TYPE       $content_type;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  CONTENT_LENGTH     $content_length;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  SCRIPT_NAME        $fastcgi_script_name;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  REQUEST_URI        $request_uri;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  DOCUMENT_URI       $document_uri;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  DOCUMENT_ROOT      $document_root;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  SERVER_PROTOCOL    $server_protocol;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  REQUEST_SCHEME     $scheme;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  HTTPS              $https if_not_empty;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  REMOTE_ADDR        $remote_addr;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  REMOTE_PORT        $remote_port;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  SERVER_ADDR        $server_addr;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  SERVER_PORT        $server_port;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  SERVER_NAME        $server_name;' >> /etc/nginx/fastcgi_params",
-  "echo 'fastcgi_param  REDIRECT_STATUS    200;' >> /etc/nginx/fastcgi_params",
+  # Генерация fastcgi_params
+  "cat > /etc/nginx/fastcgi_params << 'EOF'
+fastcgi_param  QUERY_STRING       $query_string;
+fastcgi_param  REQUEST_METHOD     $request_method;
+fastcgi_param  CONTENT_TYPE       $content_type;
+fastcgi_param  CONTENT_LENGTH     $content_length;
+fastcgi_param  SCRIPT_NAME        $fastcgi_script_name;
+fastcgi_param  REQUEST_URI        $request_uri;
+fastcgi_param  DOCUMENT_URI       $document_uri;
+fastcgi_param  DOCUMENT_ROOT      $document_root;
+fastcgi_param  SERVER_PROTOCOL    $server_protocol;
+fastcgi_param  REQUEST_SCHEME     $scheme;
+fastcgi_param  HTTPS              $https if_not_empty;
+fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
+fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
+fastcgi_param  REMOTE_ADDR        $remote_addr;
+fastcgi_param  REMOTE_PORT        $remote_port;
+fastcgi_param  SERVER_ADDR        $server_addr;
+fastcgi_param  SERVER_PORT        $server_port;
+fastcgi_param  SERVER_NAME        $server_name;
+fastcgi_param  REDIRECT_STATUS    200;
+EOF",
 
-
-  # Создание mime.types
-  "echo 'types {' > /etc/nginx/mime.types",
-  "echo '    text/html                             html htm shtml;' >> /etc/nginx/mime.types",
-  "echo '    text/css                              css;' >> /etc/nginx/mime.types",
-  "echo '    text/xml                              xml;' >> /etc/nginx/mime.types",
-  "echo '    image/gif                             gif;' >> /etc/nginx/mime.types",
-  "echo '    image/jpeg                            jpeg jpg;' >> /etc/nginx/mime.types",
-  "echo '    application/javascript                 js;' >> /etc/nginx/mime.types",
-  "echo '    application/atom+xml                  atom;' >> /etc/nginx/mime.types",
-  "echo '    application/rss+xml                   rss;' >> /etc/nginx/mime.types",
-  "echo '    text/mathml                           mml;' >> /etc/nginx/mime.types",
-  "echo '    text/plain                            txt;' >> /etc/nginx/mime.types",
-  "echo '    text/vnd.sun.j2me.app-descriptor      jad;' >> /etc/nginx/mime.types",
-  "echo '    text/vnd.wap.wml                      wml;' >> /etc/nginx/mime.types",
-  "echo '    text/x-component                      htc;' >> /etc/nginx/mime.types",
-  "echo '    image/png                             png;' >> /etc/nginx/mime.types",
-  "echo '    image/tiff                             tif tiff;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.wap.wbmp                    wbmp;' >> /etc/nginx/mime.types",
-  "echo '    image/x-icon                           ico;' >> /etc/nginx/mime.types",
-  "echo '    image/x-jng                            jng;' >> /etc/nginx/mime.types",
-  "echo '    image/x-ms-bmp                         bmp;' >> /etc/nginx/mime.types",
-  "echo '    image/svg+xml                           svg svgz;' >> /etc/nginx/mime.types",
-  "echo '    image/webp                             webp;' >> /etc/nginx/mime.types",
-  "echo '    application/font-woff                  woff;' >> /etc/nginx/mime.types",
-  "echo '    application/font-woff2                 woff2;' >> /etc/nginx/mime.types",
-  "echo '    application/java-archive               jar war ear;' >> /etc/nginx/mime.types",
-  "echo '    application/json                       json;' >> /etc/nginx/mime.types",
-  "echo '    application/mac-binhex40               hqx;' >> /etc/nginx/mime.types",
-  "echo '    application/msword                      doc;' >> /etc/nginx/mime.types",
-  "echo '    application/pdf                         pdf;' >> /etc/nginx/mime.types",
-  "echo '    application/postscript                  ps eps ai;' >> /etc/nginx/mime.types",
-  "echo '    application/rtf                         rtf;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.apple.mpegurl           m3u8;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.google-earth.kml+xml    kml;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.google-earth.kmz        kmz;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.ms-excel                xls;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.ms-fontobject           eot;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.ms-powerpoint           ppt;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.graphics     odg;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.presentation  odp;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.spreadsheet  ods;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.text         odt;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.wap.wmlc                 wmlc;' >> /etc/nginx/mime.types",
-  "echo '    application/x-7z-compressed              7z;' >> /etc/nginx/mime.types",
-  "echo '    application/x-cocoa                       cco;' >> /etc/nginx/mime.types",
-  "echo '    application/x-java-archive-diff           jardiff;' >> /etc/nginx/mime.types",
-  "echo '    application/x-java-jnlp-file              jnlp;' >> /etc/nginx/mime.types",
-  "echo '    application/x-makeself                    run;' >> /etc/nginx/mime.types",
-  "echo '    application/x-perl                        pl pm;' >> /etc/nginx/mime.types",
-  "echo '    application/x-pilot                        prc pdb;' >> /etc/nginx/mime.types",
-  "echo '    application/x-rar-compressed               rar;' >> /etc/nginx/mime.types",
-  "echo '    application/x-redhat-package-manager       rpm;' >> /etc/nginx/mime.types",
-  "echo '    application/x-sea                           sea;' >> /etc/nginx/mime.types",
-  "echo '    application/x-shockwave-flash               swf;' >> /etc/nginx/mime.types",
-  "echo '    application/x-stuffit                       sit;' >> /etc/nginx/mime.types",
-  "echo '    application/x-tcl                           tcl tk;' >> /etc/nginx/mime.types",
-  "echo '    application/x-x509-ca-cert                   der pem crt;' >> /etc/nginx/mime.types",
-  "echo '    application/x-xpinstall                       xpi;' >> /etc/nginx/mime.types",
-  "echo '    application/xhtml+xml                         xhtml;' >> /etc/nginx/mime.types",
-  "echo '    application/xspf+xml                          xspf;' >> /etc/nginx/mime.types",
-  "echo '    application/zip                               zip;' >> /etc/nginx/mime.types",
-  "echo '    application/octet-stream                      bin exe dll;' >> /etc/nginx/mime.types",
-  "echo '    application/octet-stream                      deb;' >> /etc/nginx/mime.types",
-  "echo '    application/octet-stream                      dmg;' >> /etc/nginx/mime.types",
-  "echo '    application/octet-stream                      iso img;' >> /etc/nginx/mime.types",
-  "echo '    application/octet-stream                      msi msp msm;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.chart      odc;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.database   odb;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.formula    odf;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.graphics-template   otg;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.image               oti;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.presentation-template   otp;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.spreadsheet-template    ots;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.text-master            odm;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.text-template          ott;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.oasis.opendocument.text-web               oth;' >> /etc/nginx/mime.types",
-  "echo '    application/x-7z-compressed                 7z;' >> /etc/nginx/mime.types",
-  "echo '    application/x-abiword                        abw;' >> /etc/nginx/mime.types",
-  "echo '    application/x-bzip                            bz2;' >> /etc/nginx/mime.types",
-  "echo '    application/x-cbr                             cbr;' >> /etc/nginx/mime.types",
-  "echo '    application/x-cdr                             cdr;' >> /etc/nginx/mime.types",
-  "echo '    application/x-cram-queue                      cram;' >> /etc/nginx/mime.types",
-  "echo '    application/x-director                        dir;' >> /etc/nginx/mime.types",
-  "echo '    application/x-dvi                             dvi;' >> /etc/nginx/mime.types",
-  "echo '    application/x-font-bdf                        bdf;' >> /etc/nginx/mime.types",
-  "echo '    application/x-font-pcf                        pcf;' >> /etc/nginx/mime.types",
-  "echo '    application/x-font-snf                        snf;' >> /etc/nginx/mime.types",
-  "echo '    application/x-freemind                        mm;' >> /etc/nginx/mime.types",
-  "echo '    application/x-gnumeric                        gnumeric;' >> /etc/nginx/mime.types",
-  "echo '    application/x-graphite                        gra;' >> /etc/nginx/mime.types",
-  "echo '    application/x-gtar                             gtar;' >> /etc/nginx/mime.types",
-  "echo '    application/x-hdf                              hdf;' >> /etc/nginx/mime.types",
-  "echo '    application/x-ica                              ica;' >> /etc/nginx/mime.types",
-  "echo '    application/x-info                              info;' >> /etc/nginx/mime.types",
-  "echo '    application/x-install-instructions              install;' >> /etc/nginx/mime.types",
-  "echo '    application/x-iso9660-image                     iso;' >> /etc/nginx/mime.types",
-  "echo '    application/x-java-jnlp-file                    jnlp;' >> /etc/nginx/mime.types",
-  "echo '    application/x-latex                              latex;' >> /etc/nginx/mime.types",
-  "echo '    application/x-lzh-compressed                      lzh;' >> /etc/nginx/mime.types",
-  "echo '    application/x-mie                                 mie;' >> /etc/nginx/mime.types",
-  "echo '    application/x-mobipocket-ebook                     mobi;' >> /etc/nginx/mime.types",
-  "echo '    application/x-ms-application                       application;' >> /etc/nginx/mime.types",
-  "echo '    application/x-ms-shortcut                          lnk;' >> /etc/nginx/mime.types",
-  "echo '    application/x-ms-wmd                                wmd;' >> /etc/nginx/mime.types",
-  "echo '    application/x-ms-wmz                                wmz;' >> /etc/nginx/mime.types",
-  "echo '    application/x-ms-xbap                               xbap;' >> /etc/nginx/mime.types",
-  "echo '    application/x-msaccess                              mdb;' >> /etc/nginx/mime.types",
-  "echo '    application/x-msbinder                              obd;' >> /etc/nginx/mime.types",
-  "echo '    application/x-mscardfile                            crd;' >> /etc/nginx/mime.types",
-  "echo '    application/x-msclip                                clp;' >> /etc/nginx/mime.types",
-  "echo '    application/x-msdownload                            exe;' >> /etc/nginx/mime.types",
-  "echo '    application/x-msmediaview                            m13;' >> /etc/nginx/mime.types",
-  "echo '    application/x-msmetafile                             wmf;' >> /etc/nginx/mime.types",
-  "echo '    application/x-msmoney                                mny;' >> /etc/nginx/mime.types",
-  "echo '    application/x-mspublisher                            pub;' >> /etc/nginx/mime.types",
-  "echo '    application/x-msschedule                             scd;' >> /etc/nginx/mime.types",
-  "echo '    application/x-msterminal                             trm;' >> /etc/nginx/mime.types",
-  "echo '    application/x-mswrite                                wri;' >> /etc/nginx/mime.types",
-  "echo '    application/x-netcdf                                 nc;' >> /etc/nginx/mime.types",
-  "echo '    application/x-nzb                                    nzb;' >> /etc/nginx/mime.types",
-  "echo '    application/x-pkcs12                                 p12;' >> /etc/nginx/mime.types",
-  "echo '    application/x-pkcs7-certificates                     p7b;' >> /etc/nginx/mime.types",
-  "echo '    application/x-pkcs7-certreqresp                       p7r;' >> /etc/nginx/mime.types",
-  "echo '    application/x-pkcs7-crl                               crl;' >> /etc/nginx/mime.types",
-  "echo '    application/x-pkcs7-mime                              p7m;' >> /etc/nginx/mime.types",
-  "echo '    application/x-pkcs7-signature                         p7s;' >> /etc/nginx/mime.types",
-  "echo '    application/x-planperfect                             wpd;' >> /etc/nginx/mime.types",
-  "echo '    application/x-pocket-word                             psw;' >> /etc/nginx/mime.types",
-  "echo '    application/x-rar                                     rar;' >> /etc/nginx/mime.types",
-  "echo '    application/x-reject                                  rjt;' >> /etc/nginx/mime.types",
-  "echo '    application/x-sdp                                     sdp;' >> /etc/nginx/mime.types",
-  "echo '    application/x-silverlight-app                         xap;' >> /etc/nginx/mime.types",
-  "echo '    application/x-stuffitx                                sitx;' >> /etc/nginx/mime.types",
-  "echo '    application/x-subrip                                  srt;' >> /etc/nginx/mime.types",
-  "echo '    application/x-tar                                     tar;' >> /etc/nginx/mime.types",
-  "echo '    application/x-tex                                     tex;' >> /etc/nginx/mime.types",
-  "echo '    application/x-tex-tfm                                 tfm;' >> /etc/nginx/mime.types",
-  "echo '    application/x-texinfo                                 texi;' >> /etc/nginx/mime.types",
-  "echo '    application/x-tgif                                    obj;' >> /etc/nginx/mime.types",
-  "echo '    application/x-ustar                                   ustar;' >> /etc/nginx/mime.types",
-  "echo '    application/x-wais-source                             src;' >> /etc/nginx/mime.types",
-  "echo '    application/x-x509-ca-cert                            der;' >> /etc/nginx/mime.types",
-  "echo '    application/x-xfig                                    fig;' >> /etc/nginx/mime.types",
-  "echo '    application/x-xliff                                   xlf;' >> /etc/nginx/mime.types",
-  "echo '    application/x-xpinstall                               xpi;' >> /etc/nginx/mime.types",
-  "echo '    application/x-xz                                      xz;' >> /etc/nginx/mime.types",
-  "echo '    application/x-zmachine                                z1;' >> /etc/nginx/mime.types",
-  "echo '    application/xaml+xml                                  xaml;' >> /etc/nginx/mime.types",
-  "echo '    application/xcap-diff+xml                             xdf;' >> /etc/nginx/mime.types",
-  "echo '    application/xenc+xml                                  xenc;' >> /etc/nginx/mime.types",
-  "echo '    application/xhtml+xml                                 xhtml;' >> /etc/nginx/mime.types",
-  "echo '    application/xml                                       xml;' >> /etc/nginx/mime.types",
-  "echo '    application/xml-dtd                                   dtd;' >> /etc/nginx/mime.types",
-  "echo '    application/xop+xml                                   xop;' >> /etc/nginx/mime.types",
-  "echo '    application/xproc+xml                                 xpl;' >> /etc/nginx/mime.types",
-  "echo '    application/xslt+xml                                  xslt;' >> /etc/nginx/mime.types",
-  "echo '    application/xspf+xml                                  xspf;' >> /etc/nginx/mime.types",
-  "echo '    application/xv+xml                                    mxml;' >> /etc/nginx/mime.types",
-  "echo '    application/yang                                      yang;' >> /etc/nginx/mime.types",
-  "echo '    application/yin+xml                                   yin;' >> /etc/nginx/mime.types",
-  "echo '    application/zip                                       zip;' >> /etc/nginx/mime.types",
-  "echo '    audio/adpcm                                           adp;' >> /etc/nginx/mime.types",
-  "echo '    audio/basic                                            au;' >> /etc/nginx/mime.types",
-  "echo '    audio/midi                                             mid;' >> /etc/nginx/mime.types",
-  "echo '    audio/mp4                                              m4a;' >> /etc/nginx/mime.types",
-  "echo '    audio/mpeg                                             mp3;' >> /etc/nginx/mime.types",
-  "echo '    audio/ogg                                              oga;' >> /etc/nginx/mime.types",
-  "echo '    audio/x-aiff                                           aif;' >> /etc/nginx/mime.types",
-  "echo '    audio/x-mpegurl                                        m3u;' >> /etc/nginx/mime.types",
-  "echo '    audio/x-ms-wax                                         wax;' >> /etc/nginx/mime.types",
-  "echo '    audio/x-ms-wma                                         wma;' >> /etc/nginx/mime.types",
-  "echo '    audio/x-pn-realaudio                                   ram;' >> /etc/nginx/mime.types",
-  "echo '    audio/x-wav                                            wav;' >> /etc/nginx/mime.types",
-  "echo '    image/bmp                                              bmp;' >> /etc/nginx/mime.types",
-  "echo '    image/cgm                                              cgm;' >> /etc/nginx/mime.types",
-  "echo '    image/g3fax                                            g3;' >> /etc/nginx/mime.types",
-  "echo '    image/gif                                              gif;' >> /etc/nginx/mime.types",
-  "echo '    image/ief                                              ief;' >> /etc/nginx/mime.types",
-  "echo '    image/jpeg                                             jpeg;' >> /etc/nginx/mime.types",
-  "echo '    image/ktx                                              ktx;' >> /etc/nginx/mime.types",
-  "echo '    image/png                                              png;' >> /etc/nginx/mime.types",
-  "echo '    image/prs.btif                                         btif;' >> /etc/nginx/mime.types",
-  "echo '    image/sgi                                              sgi;' >> /etc/nginx/mime.types",
-  "echo '    image/svg+xml                                          svg;' >> /etc/nginx/mime.types",
-  "echo '    image/tiff                                             tiff;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.adobe.photoshop                              psd;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.djvu                                         djvu;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.dwg                                          dwg;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.dxf                                          dxf;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.fastbidsheet                                 fbs;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.fpx                                          fpx;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.fst                                          fst;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.fujixerox.edmics-mmr                         mmr;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.fujixerox.edmics-rlc                         rlc;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.ms-modi                                      mdi;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.net-fpx                                      npx;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.wap.wbmp                                     wbmp;' >> /etc/nginx/mime.types",
-  "echo '    image/vnd.xiff                                         xif;' >> /etc/nginx/mime.types",
-  "echo '    image/webp                                             webp;' >> /etc/nginx/mime.types",
-  "echo '    image/x-3ds                                            3ds;' >> /etc/nginx/mime.types",
-  "echo '    image/x-cmu-raster                                     ras;' >> /etc/nginx/mime.types",
-  "echo '    image/x-cmx                                            cmx;' >> /etc/nginx/mime.types",
-  "echo '    image/x-freehand                                       fh;' >> /etc/nginx/mime.types",
-  "echo '    image/x-icon                                           ico;' >> /etc/nginx/mime.types",
-  "echo '    image/x-mrsid-image                                    sid;' >> /etc/nginx/mime.types",
-  "echo '    image/x-pcx                                            pcx;' >> /etc/nginx/mime.types",
-  "echo '    image/x-pict                                           pic;' >> /etc/nginx/mime.types",
-  "echo '    image/x-portable-anymap                                pnm;' >> /etc/nginx/mime.types",
-  "echo '    image/x-portable-bitmap                                pbm;' >> /etc/nginx/mime.types",
-  "echo '    image/x-portable-graymap                               pgm;' >> /etc/nginx/mime.types",
-  "echo '    image/x-portable-pixmap                                ppm;' >> /etc/nginx/mime.types",
-  "echo '    image/x-psd                                            psd;' >> /etc/nginx/mime.types",
-  "echo '    image/x-rgb                                            rgb;' >> /etc/nginx/mime.types",
-  "echo '    image/x-tga                                            tga;' >> /etc/nginx/mime.types",
-  "echo '    image/x-xbitmap                                        xbm;' >> /etc/nginx/mime.types",
-  "echo '    image/x-xpixmap                                        xpm;' >> /etc/nginx/mime.types",
-  "echo '    image/x-xwindowdump                                    xwd;' >> /etc/nginx/mime.types",
-  "echo '}' >> /etc/nginx/mime.types",
+  # Генерация mime.types
+  "cat > /etc/nginx/mime.types << 'EOF'
+types {
+    text/html                             html htm shtml;
+    text/css                              css;
+    text/xml                              xml;
+    image/gif                             gif;
+    image/jpeg                            jpeg jpg;
+    application/javascript                 js;
+    application/atom+xml                  atom;
+    application/rss+xml                   rss;
+    text/mathml                           mml;
+    text/plain                            txt;
+    text/vnd.sun.j2me.app-descriptor      jad;
+    text/vnd.wap.wml                      wml;
+    text/x-component                      htc;
+    image/png                             png;
+    image/tiff                             tif tiff;
+    image/vnd.wap.wbmp                    wbmp;
+    image/x-icon                           ico;
+    image/x-jng                            jng;
+    image/x-ms-bmp                         bmp;
+    image/svg+xml                           svg svgz;
+    image/webp                             webp;
+    application/font-woff                  woff;
+    application/font-woff2                 woff2;
+    application/java-archive               jar war ear;
+    application/json                       json;
+    application/mac-binhex40               hqx;
+    application/msword                      doc;
+    application/pdf                         pdf;
+    application/postscript                  ps eps ai;
+    application/rtf                         rtf;
+    application/vnd.apple.mpegurl           m3u8;
+    application/vnd.google-earth.kml+xml    kml;
+    application/vnd.google-earth.kmz        kmz;
+    application/vnd.ms-excel                xls;
+    application/vnd.ms-fontobject           eot;
+    application/vnd.ms-powerpoint           ppt;
+    application/vnd.oasis.opendocument.graphics     odg;
+    application/vnd.oasis.opendocument.presentation  odp;
+    application/vnd.oasis.opendocument.spreadsheet  ods;
+    application/vnd.oasis.opendocument.text         odt;
+    application/vnd.wap.wmlc                 wmlc;
+    application/x-7z-compressed              7z;
+    application/x-cocoa                       cco;
+    application/x-java-archive-diff           jardiff;
+    application/x-java-jnlp-file              jnlp;
+    application/x-makeself                    run;
+    application/x-perl                        pl pm;
+    application/x-pilot                        prc pdb;
+    application/x-rar-compressed               rar;
+    application/x-redhat-package-manager       rpm;
+    application/x-sea                           sea;
+    application/x-shockwave-flash               swf;
+    application/x-stuffit                       sit;
+    application/x-tcl                           tcl tk;
+    application/x-x509-ca-cert                   der pem crt;
+    application/x-xpinstall                       xpi;
+    application/xhtml+xml                         xhtml;
+    application/xspf+xml                          xspf;
+    application/zip                               zip;
+    application/octet-stream                      bin exe dll;
+    application/octet-stream                      deb;
+    application/octet-stream                      dmg;
+    application/octet-stream                      iso img;
+    application/octet-stream                      msi msp msm;
+    application/vnd.oasis.opendocument.chart      odc;
+    application/vnd.oasis.opendocument.database   odb;
+    application/vnd.oasis.opendocument.formula    odf;
+    application/vnd.oasis.opendocument.graphics-template   otg;
+    application/vnd.oasis.opendocument.image               oti;
+    application/vnd.oasis.opendocument.presentation-template   otp;
+    application/vnd.oasis.opendocument.spreadsheet-template    ots;
+    application/vnd.oasis.opendocument.text-master            odm;
+    application/vnd.oasis.opendocument.text-template          ott;
+    application/vnd.oasis.opendocument.text-web               oth;
+    application/x-7z-compressed                 7z;
+    application/x-abiword                        abw;
+    application/x-bzip                            bz2;
+    application/x-cbr                             cbr;
+    application/x-cdr                             cdr;
+    application/x-cram-queue                      cram;
+    application/x-director                        dir;
+    application/x-dvi                             dvi;
+    application/x-font-bdf                        bdf;
+    application/x-font-pcf                        pcf;
+    application/x-font-snf                        snf;
+    application/x-freemind                        mm;
+    application/x-gnumeric                        gnumeric;
+    application/x-graphite                        gra;
+    application/x-gtar                             gtar;
+    application/x-hdf                              hdf;
+    application/x-ica                              ica;
+    application/x-info                              info;
+    application/x-install-instructions              install;
+    application/x-iso9660-image                     iso;
+    application/x-java-jnlp-file                    jnlp;
+    application/x-latex                              latex;
+    application/x-lzh-compressed                      lzh;
+    application/x-mie                                 mie;
+    application/x-mobipocket-ebook                     mobi;
+    application/x-ms-application                       application;
+    application/x-ms-shortcut                          lnk;
+    application/x-ms-wmd                                wmd;
+    application/x-ms-wmz                                wmz;
+    application/x-ms-xbap                               xbap;
+    application/x-msaccess                              mdb;
+    application/x-msbinder                              obd;
+    application/x-mscardfile                            crd;
+    application/x-msclip                                clp;
+    application/x-msdownload                            exe;
+    application/x-msmediaview                            m13;
+    application/x-msmetafile                             wmf;
+    application/x-msmoney                                mny;
+    application/x-mspublisher                            pub;
+    application/x-msschedule                             scd;
+    application/x-msterminal                             trm;
+    application/x-mswrite                                wri;
+    application/x-netcdf                                 nc;
+    application/x-nzb                                    nzb;
+    application/x-pkcs12                                 p12;
+    application/x-pkcs7-certificates                     p7b;
+    application/x-pkcs7-certreqresp                       p7r;
+    application/x-pkcs7-crl                               crl;
+    application/x-pkcs7-mime                              p7m;
+    application/x-pkcs7-signature                         p7s;
+    application/x-planperfect                             wpd;
+    application/x-pocket-word                             psw;
+    application/x-rar                                     rar;
+    application/x-reject                                  rjt;
+    application/x-sdp                                     sdp;
+    application/x-silverlight-app                         xap;
+    application/x-stuffitx                                sitx;
+    application/x-subrip                                  srt;
+    application/x-tar                                     tar;
+    application/x-tex                                     tex;
+    application/x-tex-tfm                                 tfm;
+    application/x-texinfo                                 texi;
+    application/x-tgif                                    obj;
+    application/x-ustar                                   ustar;
+    application/x-wais-source                             src;
+    application/x-x509-ca-cert                            der;
+    application/x-xfig                                    fig;
+    application/x-xliff                                   xlf;
+    application/x-xpinstall                               xpi;
+    application/x-xz                                      xz;
+    application/x-zmachine                                z1;
+    application/xaml+xml                                  xaml;
+    application/xcap-diff+xml                             xdf;
+    application/xenc+xml                                  xenc;
+    application/xhtml+xml                                 xhtml;
+    application/xml                                       xml;
+    application/xml-dtd                                   dtd;
+    application/xop+xml                                   xop;
+    application/xproc+xml                                 xpl;
+    application/xslt+xml                                  xslt;
+    application/xspf+xml                                  xspf;
+    application/xv+xml                                    mxml;
+    application/yang                                      yang;
+    application/yin+xml                                   yin;
+    application/zip                                       zip;
+    audio/adpcm                                           adp;
+    audio/basic                                            au;
+    audio/midi                                             mid;
+    audio/mp4                                              m4a;
+    audio/mpeg                                             mp3;
+    audio/ogg                                              oga;
+    audio/x-aiff                                           aif;
+    audio/x-mpegurl                                        m3u;
+    audio/x-ms-wax                                         wax;
+    audio/x-ms-wma                                         wma;
+    audio/x-pn-realaudio                                   ram;
+    audio/x-wav                                            wav;
+    image/bmp                                              bmp;
+    image/cgm                                              cgm;
+    image/g3fax                                            g3;
+    image/gif                                              gif;
+    image/ief                                              ief;
+    image/jpeg                                             jpeg;
+    image/ktx                                              ktx;
+    image/png                                              png;
+    image/prs.btif                                         btif;
+    image/sgi                                              sgi;
+    image/svg+xml                                          svg;
+    image/tiff                                             tiff;
+    image/vnd.adobe.photoshop                              psd;
+    image/vnd.djvu                                         djvu;
+    image/vnd.dwg                                          dwg;
+    image/vnd.dxf                                          dxf;
+    image/vnd.fastbidsheet                                 fbs;
+    image/vnd.fpx                                          fpx;
+    image/vnd.fst                                          fst;
+    image/vnd.fujixerox.edmics-mmr                         mmr;
+    image/vnd.fujixerox.edmics-rlc                         rlc;
+    image/vnd.ms-modi                                      mdi;
+    image/vnd.net-fpx                                      npx;
+    image/vnd.wap.wbmp                                     wbmp;
+    image/vnd.xiff                                         xif;
+    image/webp                                             webp;
+    image/x-3ds                                            3ds;
+    image/x-cmu-raster                                     ras;
+    image/x-cmx                                            cmx;
+    image/x-freehand                                       fh;
+    image/x-icon                                           ico;
+    image/x-mrsid-image                                    sid;
+    image/x-pcx                                            pcx;
+    image/x-pict                                           pic;
+    image/x-portable-anymap                                pnm;
+    image/x-portable-bitmap                                pbm;
+    image/x-portable-graymap                               pgm;
+    image/x-portable-pixmap                                ppm;
+    image/x-psd                                            psd;
+    image/x-rgb                                            rgb;
+    image/x-tga                                            tga;
+    image/x-xbitmap                                        xbm;
+    image/x-xpixmap                                        xpm;
+    image/x-xwindowdump                                    xwd;
+}
+EOF",
 
   # Права доступа
-  "chown -R www-data:www-data /run/php-fpm || true",
-  "chown -R www-data:www-data /var/log/nginx || true",
+  "chown -R www-data:www-data /run/php-fpm /var/log/nginx || true",
   "chmod -R 755 /run/php-fpm || true"
 ]
