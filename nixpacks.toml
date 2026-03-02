@@ -140,16 +140,6 @@ cmds = [
   "echo '    application/vnd.oasis.opendocument.text-master            odm;' >> /etc/nginx/mime.types",
   "echo '    application/vnd.oasis.opendocument.text-template          ott;' >> /etc/nginx/mime.types",
   "echo '    application/vnd.oasis.opendocument.text-web               oth;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.openxmlformats-officedocument.presentationml.slide'
-                                                           'sldx;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.openxmlformats-officedocument.presentationml.slideshow'
-                                                           'ppsx;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.openxmlformats-officedocument.presentationml.template'
-                                                           'potx;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.openxmlformats-officedocument.spreadsheetml.template'
-                                                           'xltx;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.openxmlformats-officedocument.wordprocessingml.template'
-                                                           'dotx;' >> /etc/nginx/mime.types",
   "echo '    application/x-7z-compressed                 7z;' >> /etc/nginx/mime.types",
   "echo '    application/x-abiword                        abw;' >> /etc/nginx/mime.types",
   "echo '    application/x-bzip                            bz2;' >> /etc/nginx/mime.types",
