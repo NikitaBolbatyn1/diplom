@@ -7,5 +7,8 @@
         "install": {
             "flags": ["--no-dev", "--optimize-autoloader", "--no-interaction"]
         }
+    },
+    "build": {
+        "builder": "NIXPACKS"
     }
 }
