@@ -8,6 +8,8 @@ nixPkgs = ["php81", "php81Extensions.pdo_mysql", "php81Extensions.gd", "php81Ext
 [phases.install]
 cmds = [
   "mkdir -p /etc/php-fpm.d",
+  "mkdir -p /var/log/nginx",
+  "mkdir -p /var/lib/nginx",
   "echo '[global]' > /etc/php-fpm.conf",
   "echo 'pid = /run/php-fpm/php-fpm.pid' >> /etc/php-fpm.conf",
   "echo 'error_log = /var/log/php-fpm.log' >> /etc/php-fpm.conf",
