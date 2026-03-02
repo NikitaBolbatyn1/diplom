@@ -1,6 +1,6 @@
 [php]
 extensions = ["pdo_mysql", "gd", "zip"]
-version = "8.1"
+version = "8.4"
 
 [phases.setup]
 nixPkgs = ["php81", "php81Extensions.pdo_mysql", "php81Extensions.gd", "php81Extensions.zip", "nginx"]
@@ -18,5 +18,8 @@ cmds = [
 
   # Права доступа
   "chown -R www-data:www-data /run/php-fpm /var/log/nginx || true",
-  "chmod -R 755 /run/php-fpm || true"
+  "chmod -R 755 /run/php-fpm || true",
+  "mkdir -p /app/var/cache/dev /app/var/log",
+  "chown -R nobody:nobody /app/var || true",
+  "chmod -R 775 /app/var || true"
 ]
