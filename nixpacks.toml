@@ -281,7 +281,7 @@ cmds = [
   "echo '    image/x-xbitmap                                        xbm;' >> /etc/nginx/mime.types",
   "echo '    image/x-xpixmap                                        xpm;' >> /etc/nginx/mime.types",
   "echo '    image/x-xwindowdump                                    xwd;' >> /etc/nginx/mime.types",
-  "echo '}' >> /etc/nginx/mime.types"
+  "echo '}' >> /etc/nginx/mime.types",
 
   # Права доступа
   "chown -R www-data:www-data /run/php-fpm || true",
