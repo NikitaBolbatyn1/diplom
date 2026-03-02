@@ -1,6 +1,7 @@
 {
+    "web_root": "public",
     "php": {
-        "extensions": ["gd"]
+        "extensions": ["gd", "zip", "pdo_pgsql"]
     },
     "composer": {
         "install": {
