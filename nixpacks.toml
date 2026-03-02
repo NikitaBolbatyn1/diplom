@@ -1,3 +1,9 @@
 [php]
 extensions = ["pdo_mysql", "gd", "zip"]
-version = "8.2"  # или 8.3, какая версия вам нужна
+version = "8.2"
+
+[phases.setup]
+nixPkgs = ["php82", "php82Extensions.pdo_mysql", "php82Extensions.gd", "php82Extensions.zip"]
+
+[deploy]
+startCommand = "php-fpm -F"
