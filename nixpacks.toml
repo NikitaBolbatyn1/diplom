@@ -106,12 +106,12 @@ cmds = [
   "echo '    application/vnd.oasis.opendocument.presentation  odp;' >> /etc/nginx/mime.types",
   "echo '    application/vnd.oasis.opendocument.spreadsheet  ods;' >> /etc/nginx/mime.types",
   "echo '    application/vnd.oasis.opendocument.text         odt;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.openxmlformats-officedocument.presentationml.presentation'
-                                                           'pptx;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                                                           'xlsx;' >> /etc/nginx/mime.types",
-  "echo '    application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-                                                           'docx;' >> /etc/nginx/mime.types",
+  "echo '    application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  "echo '    pptx;' >> /etc/nginx/mime.types",
+  "echo '    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  "echo '    xlsx;' >> /etc/nginx/mime.types",
+  "echo '    application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  "echo '    docx;' >> /etc/nginx/mime.types",
   "echo '    application/vnd.wap.wmlc                 wmlc;' >> /etc/nginx/mime.types",
   "echo '    application/x-7z-compressed              7z;' >> /etc/nginx/mime.types",
   "echo '    application/x-cocoa                       cco;' >> /etc/nginx/mime.types",
