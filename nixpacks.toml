@@ -1,9 +1,25 @@
 [php]
 extensions = ["pdo_mysql", "gd", "zip"]
-version = "8.2"
+version = "8.1"
 
 [phases.setup]
-nixPkgs = ["php82", "php82Extensions.pdo_mysql", "php82Extensions.gd", "php82Extensions.zip"]
+nixPkgs = ["php81", "php81Extensions.pdo_mysql", "php81Extensions.gd", "php81Extensions.zip"]
 
-[deploy]
-startCommand = "php-fpm -F"
+[phases.install]
+cmds = [
+  "mkdir -p /etc/php-fpm.d",
+  "echo '[global]' > /etc/php-fpm.conf",
+  "echo 'pid = /run/php-fpm/php-fpm.pid' >> /etc/php-fpm.conf",
+  "echo 'error_log = /var/log/php-fpm.log' >> /etc/php-fpm.conf",
+  "echo 'include=/etc/php-fpm.d/*.conf' >> /etc/php-fpm.conf",
+  "echo '[www]' > /etc/php-fpm.d/www.conf",
+  "echo 'listen = 127.0.0.1:9000' >> /etc/php-fpm.d/www.conf",
+  "echo 'listen.allowed_clients = 127.0.0.1' >> /etc/php-fpm.d/www.conf",
+  "echo 'user = nobody' >> /etc/php-fpm.d/www.conf",
+  "echo 'group = nobody' >> /etc/php-fpm.d/www.conf",
+  "echo 'pm = dynamic' >> /etc/php-fpm.d/www.conf",
+  "echo 'pm.max_children = 5' >> /etc/php-fpm.d/www.conf",
+  "echo 'pm.start_servers = 2' >> /etc/php-fpm.d/www.conf",
+  "echo 'pm.min_spare_servers = 1' >> /etc/php-fpm.d/www.conf",
+  "echo 'pm.max_spare_servers = 3' >> /etc/php-fpm.d/www.conf"
+]
