@@ -31,7 +31,7 @@
             "symfony/runtime": true
         },
         "platform": {
-            "ext-gd": true
+            "ext-gd": "8.1.0"
         },
         "sort-packages": true
     },
