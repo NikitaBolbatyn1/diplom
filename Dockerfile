@@ -24,8 +24,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY . /app
 WORKDIR /app
 
-# Установка прав на директории
-RUN chown -R www-data:www-data /app \
+# Установка прав на директории (СНАЧАЛА СОЗДАЕМ, ПОТОМ СТАВИМ ПРАВА)
+RUN mkdir -p /app/var/cache /app/var/log /app/var/sessions \
+    && chown -R www-data:www-data /app \
     && chmod -R 755 /app/var
 
 # Установка зависимостей PHP
@@ -36,14 +37,15 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY php-fpm.conf /usr/local/etc/php-fpm.conf
 COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 
-# Создание необходимых директорий
+# Создание необходимых системных директорий
 RUN mkdir -p /var/log/nginx /var/lib/nginx /run/php-fpm
 
-# Права доступа
+# Права доступа для системных директорий
 RUN chown -R www-data:www-data /var/log/nginx /var/lib/nginx /run/php-fpm
 
 # Создание healthcheck файлов
-RUN echo "<?php echo 'OK';" > /app/public/healthcheck.php \
+RUN mkdir -p /app/public \
+    && echo "<?php echo 'OK';" > /app/public/healthcheck.php \
     && echo "<?php phpinfo();" > /app/public/info.php
 
 # Копирование и установка прав на start.sh
