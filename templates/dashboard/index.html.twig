@@ -12,6 +12,7 @@
                     <th>Место</th>
                     <th>Название</th>
                     <th>Ответственный</th>
+                    <th>Факультет</th>
                     <th>Действия</th>
                 </tr>
                 </thead>
@@ -24,6 +25,13 @@
                         <td>{{ event.title }}</td>
                         <td>{{ event.responsible }}</td>
                         <td>
+                            {% if event.faculty %}
+                                <span class="badge bg-info">{{ event.faculty.name }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Не указан</span>
+                            {% endif %}
+                        </td>
+                        <td>
                             <a href="{{ path('event_edit', {'id': event.id}) }}" class="btn btn-sm btn-outline-primary">✎</a>
                             <form method="post" action="{{ path('event_delete', {'id': event.id}) }}" style="display:inline-block;" onsubmit="return confirm('Удалить?');">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
@@ -32,7 +40,7 @@
                         </td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="6" class="text-center">Нет мероприятий</td></tr>
+                    <tr><td colspan="7" class="text-center">Нет мероприятий</td></tr>
                 {% endfor %}
                 </tbody>
             </table>

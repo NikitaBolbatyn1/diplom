@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Архив файлов{% endblock %}
+
+{% block body %}
+    <div class="table-container">
+        <h2 class="mb-4">Архив скачанных файлов</h2>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название файла</th>
+                    <th>Размер</th>
+                    <th>Скачан</th>
+                    <th>Кем скачан</th>
+                    <th>Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for file in files %}
+                    <tr>
+                        <td>{{ file.id }}</td>
+                        <td>
+                            <a href="{{ path('archive_download', {'id': file.id}) }}" target="_blank">
+                                {{ file.originalFilename }}
+                            </a>
+                        </td>
+                        <td>{{ file.formattedFileSize }}</td>
+                        <td>{{ file.downloadedAt|date('d.m.Y H:i:s') }}</td>
+                        <td>{{ file.downloadedBy.fullName }}</td>
+                        <td>
+                            <a href="{{ path('archive_download', {'id': file.id}) }}" class="btn btn-sm btn-outline-success" title="Скачать">⬇️</a>
+                            <form method="post" action="{{ path('archive_delete', {'id': file.id}) }}" style="display:inline-block;" onsubmit="return confirm('Удалить файл из архива? Файл будет удалён с сервера.');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ file.id) }}">
+                                <button class="btn btn-sm btn-outline-danger" title="Удалить">🗑</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">Архив пуст</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

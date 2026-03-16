@@ -7,9 +7,17 @@
                 <div class="card-header">{{ title }}</div>
                 <div class="card-body">
                     {{ form_start(form) }}
-                    {{ form_widget(form) }}
-                    <button class="btn btn-primary">{{ title }}</button>
-                    <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">Отмена</a>
+                    {{ form_row(form.date) }}
+                    {{ form_row(form.time) }}
+                    {{ form_row(form.place) }}
+                    {{ form_row(form.title) }}
+                    {{ form_row(form.responsible) }}
+                    {{ form_row(form.faculty) }}
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary">{{ title }}</button>
+                        <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">Отмена</a>
+                    </div>
                     {{ form_end(form) }}
                 </div>
             </div>

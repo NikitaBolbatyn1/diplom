@@ -21,7 +21,7 @@
                 "shasum": ""
             },
             "require": {
-                "php": "^7.4 || ^8.0"
+                "php": "^8.4"
             },
             "conflict": {
                 "phpstan/phpstan": "<1.11.10"

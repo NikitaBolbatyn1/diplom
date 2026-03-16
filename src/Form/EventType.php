@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Event;
+use App\Entity\Faculty;
+use App\Repository\FacultyRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -33,6 +36,17 @@ class EventType extends AbstractType
             ])
             ->add('responsible', TextType::class, [
                 'label' => 'Ответственный',
+            ])
+            ->add('faculty', EntityType::class, [
+                'class' => Faculty::class,
+                'choice_label' => 'name',
+                'label' => 'Факультет/Отдел',
+                'placeholder' => '-- Выберите факультет --',
+                'required' => false,
+                'query_builder' => function (FacultyRepository $repo) {
+                    return $repo->createQueryBuilder('f')
+                        ->orderBy('f.name', 'ASC');
+                },
             ])
         ;
     }

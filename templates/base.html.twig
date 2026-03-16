@@ -31,10 +31,23 @@
                 <ul class="navbar-nav ms-auto">
                     {% if is_granted('ROLE_ADMIN') %}
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ path('admin_dashboard') }}">Статистика</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('faculty_index') }}">Факультеты</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('archive_index') }}">Архив файлов</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ path('admin_users') }}">Пользователи</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('admin_export') }}">Экспорт в Excel</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('faculty_index') }}">Факультеты</a>
                         </li>
                     {% endif %}
                     <li class="nav-item">

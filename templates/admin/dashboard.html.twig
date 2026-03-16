@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Статистика по факультетам{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h2 class="mb-4">Статистика по факультетам</h2>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Всего мероприятий</h5>
+                        <p class="display-4">{{ totalEvents }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Факультетов всего</h5>
+                        <p class="display-4">{{ totalFaculties }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title">Факультетов с мероприятиями</h5>
+                        <p class="display-4">{{ facultiesWithEvents }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Факультет</th>
+                        <th>Заведующий</th>
+                        <th>Всего мероприятий</th>
+                        <th>Дней с мероприятиями</th>
+                        <th>Уникальных ответственных</th>
+                        <th>Первое мероприятие</th>
+                        <th>Последнее мероприятие</th>
+                        <th>Детали</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for stat in statistics %}
+                        <tr>
+                            <td><strong>{{ stat.name }}</strong></td>
+                            <td>{{ stat.head_name }}</td>
+                            <td>
+                            <span class="badge {% if stat.total_events > 10 %}bg-success{% elseif stat.total_events > 0 %}bg-warning{% else %}bg-secondary{% endif %}">
+                                {{ stat.total_events }}
+                            </span>
+                            </td>
+                            <td>{{ stat.days_with_events ?? 0 }}</td>
+                            <td>{{ stat.unique_responsibles ?? 0 }}</td>
+                            <td>{{ stat.first_event ? stat.first_event|date('d.m.Y') : '—' }}</td>
+                            <td>{{ stat.last_event ? stat.last_event|date('d.m.Y') : '—' }}</td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#modal{{ stat.id }}">Подробнее</a>
+
+                                <!-- Модальное окно с деталями -->
+                                <div class="modal fade" id="modal{{ stat.id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">{{ stat.name }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p><strong>Заведующий:</strong> {{ stat.head_name }}</p>
+                                                <p><strong>Всего мероприятий:</strong> {{ stat.total_events }}</p>
+                                                <p><strong>Дней с мероприятиями:</strong> {{ stat.days_with_events ?? 0 }}</p>
+                                                <p><strong>Уникальных ответственных:</strong> {{ stat.unique_responsibles ?? 0 }}</p>
+                                                <p><strong>Период активности:</strong>
+                                                    {% if stat.first_event and stat.last_event %}
+                                                        с {{ stat.first_event|date('d.m.Y') }} по {{ stat.last_event|date('d.m.Y') }}
+                                                    {% else %}
+                                                        Нет мероприятий
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center">Нет данных для отображения</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

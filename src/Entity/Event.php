@@ -58,6 +58,10 @@ class Event
         $this->updatedAt = new \DateTime();
     }
 
+    #[ORM\ManyToOne(targetEntity: Faculty::class, inversedBy: 'events')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Faculty $faculty = null;
+
     // Getters and setters...
     public function getId(): ?int { return $this->id; }
     public function getDate(): ?\DateTimeInterface { return $this->date; }
@@ -74,4 +78,6 @@ class Event
     public function setCreatedBy(?User $createdBy): self { $this->createdBy = $createdBy; return $this; }
     public function getCreatedAt(): ?\DateTimeInterface { return $this->createdAt; }
     public function getUpdatedAt(): ?\DateTimeInterface { return $this->updatedAt; }
+    public function getFaculty(): ?Faculty { return $this->faculty; }
+    public function setFaculty(?Faculty $faculty): self { $this->faculty = $faculty; return $this; }
 }

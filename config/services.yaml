@@ -8,6 +8,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app.url: '%env(APP_URL)%'
+    archive_directory: '%kernel.project_dir%/var/archive'
 
 services:
     # default configuration for services in *this* file
