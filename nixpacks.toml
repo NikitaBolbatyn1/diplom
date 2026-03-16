@@ -30,7 +30,10 @@ cmds = [
   "mkdir -p /app/var/cache/prod /app/var/log /app/var/sessions",
 
   "rm -rf /app/var/cache/*",
-  "chmod +x /app/start.sh"
+  "chmod +x /app/start.sh",
+  "chmod 755 /app/start.sh",
+  "chmod +x /app/start.sh",
+  "ls -la /app/start.sh"
 ]
 
 [start]
