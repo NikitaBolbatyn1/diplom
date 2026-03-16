@@ -42,10 +42,22 @@ RUN mkdir -p \
     /app/var/sessions \
     /app/var/cache/dev
 
-# Копирование конфигов
-COPY php-fpm.conf /usr/local/etc/php-fpm.conf
-COPY www.conf /usr/local/etc/php-fpm.d/www.conf
+# Копирование конфигов Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
+
+# Копирование конфигов PHP-FPM
+COPY php-fpm.conf /usr/local/etc/php-fpm.conf
+
+# СОЗДАЕМ директорию и копируем www.conf (ВАЖНО!)
+RUN mkdir -p /usr/local/etc/php-fpm.d
+COPY www.conf /usr/local/etc/php-fpm.d/www.conf
+
+# Исправляем путь в php-fpm.conf
+RUN sed -i 's|/etc/php-fpm.d|/usr/local/etc/php-fpm.d|g' /usr/local/etc/php-fpm.conf
+
+# Создаем симлинк для обратной совместимости
+RUN mkdir -p /etc/php-fpm.d && \
+    ln -sf /usr/local/etc/php-fpm.d/www.conf /etc/php-fpm.d/www.conf
 
 # Создание fastcgi_params
 RUN echo 'fastcgi_param  QUERY_STRING       $query_string;\
@@ -100,8 +112,12 @@ RUN mkdir -p /app/public \
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-# Исправление пути в php-fpm.conf если нужно
-RUN sed -i 's|/etc/php-fpm.d|/usr/local/etc/php-fpm.d|g' /usr/local/etc/php-fpm.conf
+# Проверяем, что конфиги PHP-FPM на месте
+RUN echo "=== VERIFYING PHP-FPM CONFIGS ===" && \
+    ls -la /usr/local/etc/php-fpm.conf && \
+    ls -la /usr/local/etc/php-fpm.d/ && \
+    echo "=== PHP-FPM.CONF CONTENT ===" && \
+    cat /usr/local/etc/php-fpm.conf | grep -A 2 "include"
 
 # Проверка конфигурации PHP-FPM
 RUN php-fpm -t
