@@ -1,7 +1,7 @@
 # Используем официальный PHP 8.4 образ
 FROM php:8.4-fpm
 
-# Установка системных зависимостей (ДОБАВЛЕН libzip)
+# Установка системных зависимостей
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nginx \
-    libzip-dev \  # ВАЖНО: добавляем libzip-dev для расширения zip
+    libzip-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
