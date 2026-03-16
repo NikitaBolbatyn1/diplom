@@ -22,4 +22,7 @@ cmds = [
   "mkdir -p /app/var/cache/dev /app/var/log",
   "chown -R nobody:nobody /app/var || true",
   "chmod -R 775 /app/var || true"
+
+  "mkdir -p var/archive"
+  "chmod -R 777 var/archive"
 ]
