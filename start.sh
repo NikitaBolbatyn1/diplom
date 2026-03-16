@@ -1,4 +1,14 @@
 #!/bin/sh
+echo "=== DEBUG INFO ==="
+echo "Current directory: $(pwd)"
+echo "Directory contents:"
+ls -la /app/public/
+echo "PHP-FPM version:"
+php-fpm -v
+echo "Nginx version:"
+nginx -v
+echo "=== END DEBUG ==="
+
 set -e
 
 echo "Waiting for database to be ready..."
