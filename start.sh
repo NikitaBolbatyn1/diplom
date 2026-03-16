@@ -23,7 +23,17 @@ fi
 # ===== ДОБАВЛЕНО: Создание validation.xml для Symfony Form =====
 echo "Creating Symfony Form validation.xml..."
 mkdir -p /app/vendor/symfony/form/Resources/config/
-touch /app/vendor/symfony/form/Resources/config/validation.xml
+cat > /app/vendor/symfony/form/Resources/config/validation.xml << 'EOF'
+<?xml version="1.0" encoding="UTF-8" ?>
+<constraint-mapping xmlns="http://symfony.com/schema/dic/constraint-mapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
+
+    <class name="DummyConstraintClass">
+        <!-- Этот пустой класс удовлетворяет требованиям схемы -->
+    </class>
+</constraint-mapping>
+EOF
 
 echo "Running database migrations..."
 cd /app && php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration || echo "Migrations failed but continuing"
