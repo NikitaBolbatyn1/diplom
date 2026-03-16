@@ -1,8 +1,8 @@
 {
     "build": {
-        "builder": "NIXPACKS"
+        "builder": "DOCKERFILE"
     },
     "deploy": {
-        "startCommand": "sh -c 'if [ -f /app/start.sh ]; then chmod +x /app/start.sh && /app/start.sh; else php-fpm -y /etc/php-fpm.conf -D && sleep 3 && nginx -g \"daemon off;\"; fi'"
+        "startCommand": "/start.sh"
     }
 }
