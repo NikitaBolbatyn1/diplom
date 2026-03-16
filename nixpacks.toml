@@ -3,7 +3,7 @@ extensions = ["pdo_mysql", "gd", "zip"]
 version = "8.4"
 
 [phases.setup]
-nixPkgs = ["php84", "php81Extensions.pdo_mysql", "php81Extensions.gd", "php81Extensions.zip", "nginx"]
+nixPkgs = ["php", "phpExtensions.pdo_mysql", "phpExtensions.gd", "phpExtensions.zip", "nginx"]
 
 [phases.install]
 cmds = [
@@ -34,6 +34,18 @@ cmds = [
   "chmod 755 /app/start.sh",
   "chmod +x /app/start.sh",
   "ls -la /app/start.sh"
+  "composer install --no-dev --optimize-autoloader --no-interaction",
+  "php bin/console cache:clear --env=prod --no-debug --no-warmup",
+  "chmod +x /app/start.sh",
+  "cp /app/php-fpm.conf /etc/php-fpm.conf",
+  "cp /app/www.conf /etc/php-fpm.d/www.conf",
+
+  "echo '=== PHP-FPM CONFIGS AFTER COPY ==='",
+  "ls -la /etc/php-fpm.conf",
+  "ls -la /etc/php-fpm.d/",
+  "echo '=== END ==='",
+
+  "php-fpm -t -y /etc/php-fpm.conf || echo 'PHP-FPM config test failed'",
 ]
 
 [start]
