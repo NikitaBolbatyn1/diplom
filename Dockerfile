@@ -53,7 +53,8 @@ RUN mkdir -p /usr/local/etc/php-fpm.d
 COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 
 # Исправляем путь в php-fpm.conf
-RUN sed -i 's|/etc/php-fpm.d|/usr/local/etc/php-fpm.d|g' /usr/local/etc/php-fpm.conf
+RUN sed -i 's|/etc/php-fpm.d|/usr/local/etc/php-fpm.d|g' /usr/local/etc/php-fpm.conf && \
+    sed -i 's|/usr/local/usr/local|/usr/local|g' /usr/local/etc/php-fpm.conf
 
 # Создаем симлинк для обратной совместимости
 RUN mkdir -p /etc/php-fpm.d && \
