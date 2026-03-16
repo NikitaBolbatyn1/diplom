@@ -3,6 +3,6 @@
         "builder": "NIXPACKS"
     },
     "deploy": {
-        "startCommand": "/app/start.sh"
+        "startCommand": "php-fpm -D && sleep 3 && nginx -g 'daemon off;'"
     }
 }
