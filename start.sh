@@ -20,6 +20,11 @@ if grep -q "DebugBundle" /app/config/bundles.php 2>/dev/null; then
     cd /app && composer require symfony/debug-bundle --no-interaction || true
 fi
 
+# ===== ДОБАВЛЕНО: Создание validation.xml для Symfony Form =====
+echo "Creating Symfony Form validation.xml..."
+mkdir -p /app/vendor/symfony/form/Resources/config/
+touch /app/vendor/symfony/form/Resources/config/validation.xml
+
 echo "Running database migrations..."
 cd /app && php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration || echo "Migrations failed but continuing"
 
@@ -27,10 +32,10 @@ cd /app && php bin/console doctrine:migrations:migrate --no-interaction --allow-
 echo "Starting PHP-FPM with config /usr/local/etc/php-fpm.conf..."
 php-fpm -y /usr/local/etc/php-fpm.conf -D
 
-# Проверяем, что PHP-FPM запустился (без pgrep)
+# Проверяем, что PHP-FPM запустился
 sleep 3
-if [ -f /run/php-fpm.pid ]; then
-    echo "PHP-FPM started successfully (PID: $(cat /run/php-fpm.pid))"
+if [ -f /run/php-fpm.pid ] || ps aux | grep -v grep | grep -q php-fpm; then
+    echo "PHP-FPM started successfully"
 else
     echo "WARNING: PHP-FPM might not have started, but continuing..."
 fi
