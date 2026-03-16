@@ -23,6 +23,18 @@ cmds = [
   "chown -R nobody:nobody /app/var || true",
   "chmod -R 775 /app/var || true"
 
-  "mkdir -p var/archive"
-  "chmod -R 777 var/archive"
+  # 1. Создание директории для архива файлов
+  "mkdir -p /app/public/uploads/archive /app/var/archive",
+
+  # 2. Установка Composer зависимостей
+  "composer install --no-dev --optimize-autoloader --no-interaction",
+
+  # 3. Создание директории для сессий PHP
+  "mkdir -p /tmp/php-sessions",
+
+  # 4. Создание директорий Symfony
+  "mkdir -p /app/var/cache/prod /app/var/log /app/var/sessions",
+
+  # 9. Очистка кеша
+  "rm -rf /app/var/cache/*",
 ]
