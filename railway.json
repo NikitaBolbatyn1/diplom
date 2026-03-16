@@ -3,6 +3,6 @@
         "builder": "NIXPACKS"
     },
     "deploy": {
-        "startCommand": "cp /app/nginx.conf /nginx.conf && php-fpm -y /assets/php-fpm.conf & nginx -c /nginx.conf"
+        "startCommand": "/app/start.sh"
     }
 }
