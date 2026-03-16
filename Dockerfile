@@ -1,7 +1,7 @@
 # Используем официальный PHP 8.4 образ
 FROM php:8.4-fpm
 
-# Установка системных зависимостей
+# Установка системных зависимостей (ДОБАВЛЕН libzip)
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -11,18 +11,21 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nginx \
-    net-tools \
-    procps \
+    libzip-dev \  # ВАЖНО: добавляем libzip-dev для расширения zip
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Установка PHP расширений (из вашего railpack.json)
+# Установка PHP расширений
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Установка Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Создание структуры директорий (из вашего nixpacks.toml)
+# Копирование файлов проекта
+COPY . /app
+WORKDIR /app
+
+# Создание структуры директорий
 RUN mkdir -p \
     /etc/php-fpm.d \
     /var/log/nginx \
@@ -38,16 +41,12 @@ RUN mkdir -p \
     /app/var/sessions \
     /app/var/cache/dev
 
-# Копирование файлов проекта
-COPY . /app
-WORKDIR /app
-
-# Копирование конфигов в правильные места (из вашего nixpacks.toml)
-COPY php-fpm.conf /etc/php-fpm.conf
-COPY www.conf /etc/php-fpm.d/www.conf
+# Копирование конфигов
+COPY php-fpm.conf /usr/local/etc/php-fpm.conf
+COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Создание fastcgi_params если его нет
+# Создание fastcgi_params
 RUN echo 'fastcgi_param  QUERY_STRING       $query_string;\
 fastcgi_param  REQUEST_METHOD     $request_method;\
 fastcgi_param  CONTENT_TYPE       $content_type;\
@@ -68,7 +67,7 @@ fastcgi_param  SERVER_PORT        $server_port;\
 fastcgi_param  SERVER_NAME        $server_name;\
 fastcgi_param  REDIRECT_STATUS    200;' > /etc/nginx/fastcgi_params
 
-# Создание mime.types если его нет
+# Создание mime.types
 RUN echo 'types {\
     text/html                             html htm shtml;\
     text/css                              css;\
@@ -86,17 +85,17 @@ RUN echo 'types {\
     font/woff2                             woff2;\
 }' > /etc/nginx/mime.types
 
-# Установка прав доступа (из вашего nixpacks.toml)
+# Установка прав доступа
 RUN chown -R www-data:www-data /run/php-fpm /var/log/nginx /app/var /tmp/php-sessions \
     && chmod -R 755 /run/php-fpm \
-    && chmod -R 775 /app/var \
-    && chown -R nobody:nobody /app/var || true
+    && chmod -R 775 /app/var
 
 # Установка зависимостей Composer
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Создание healthcheck файлов
-RUN echo "<?php phpinfo();" > /app/public/info.php \
+RUN mkdir -p /app/public \
+    && echo "<?php phpinfo();" > /app/public/info.php \
     && echo "<?php echo 'OK';" > /app/public/healthcheck.php
 
 # Копирование и подготовка start.sh
@@ -112,5 +111,4 @@ RUN nginx -t
 # Открываем порт
 EXPOSE 8080
 
-# Запускаем start.sh
 CMD ["/start.sh"]
