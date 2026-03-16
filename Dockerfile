@@ -25,15 +25,16 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY . /app
 WORKDIR /app
 
+# Установка зависимостей Composer
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
 # Создание структуры директорий
 RUN mkdir -p \
-    /etc/php-fpm.d \
     /var/log/nginx \
     /var/lib/nginx \
     /etc/nginx \
     /run/php-fpm \
     /tmp/php-sessions \
-    /var/www/html \
     /app/public/uploads/archive \
     /app/var/archive \
     /app/var/cache/prod \
@@ -90,9 +91,6 @@ RUN chown -R www-data:www-data /run/php-fpm /var/log/nginx /app/var /tmp/php-ses
     && chmod -R 755 /run/php-fpm \
     && chmod -R 775 /app/var
 
-# Установка зависимостей Composer
-RUN composer install --no-dev --optimize-autoloader --no-interaction
-
 # Создание healthcheck файлов
 RUN mkdir -p /app/public \
     && echo "<?php phpinfo();" > /app/public/info.php \
@@ -101,6 +99,9 @@ RUN mkdir -p /app/public \
 # Копирование и подготовка start.sh
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
+
+# Исправление пути в php-fpm.conf если нужно
+RUN sed -i 's|/etc/php-fpm.d|/usr/local/etc/php-fpm.d|g' /usr/local/etc/php-fpm.conf
 
 # Проверка конфигурации PHP-FPM
 RUN php-fpm -t
