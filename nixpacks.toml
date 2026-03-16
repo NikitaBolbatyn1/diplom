@@ -33,7 +33,7 @@ cmds = [
   "chmod +x /app/start.sh",
   "chmod 755 /app/start.sh",
   "chmod +x /app/start.sh",
-  "ls -la /app/start.sh"
+  "ls -la /app/start.sh",
   "composer install --no-dev --optimize-autoloader --no-interaction",
   "php bin/console cache:clear --env=prod --no-debug --no-warmup",
   "chmod +x /app/start.sh",
