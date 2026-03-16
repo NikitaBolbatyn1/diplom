@@ -21,11 +21,9 @@ cmds = [
   "chmod -R 755 /run/php-fpm || true",
   "mkdir -p /app/var/cache/dev /app/var/log",
   "chown -R nobody:nobody /app/var || true",
-  "chmod -R 775 /app/var || true", # <--- Здесь была пропущена запятая
+  "chmod -R 775 /app/var || true",
 
   "mkdir -p /app/public/uploads/archive /app/var/archive",
-
-  "composer install --no-dev --optimize-autoloader --no-interaction",
 
   "mkdir -p /tmp/php-sessions",
 
