@@ -48,11 +48,11 @@ COPY nginx.conf /etc/nginx/nginx.conf
 # Копирование конфигов PHP-FPM
 COPY php-fpm.conf /usr/local/etc/php-fpm.conf
 
-# СОЗДАЕМ директорию и копируем www.conf (ВАЖНО!)
+# СОЗДАЕМ директорию и копируем www.conf
 RUN mkdir -p /usr/local/etc/php-fpm.d
 COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 
-# Исправляем путь в php-fpm.conf
+# Исправляем путь в php-fpm.conf (ИСПРАВЛЕНО!)
 RUN sed -i 's|/etc/php-fpm.d|/usr/local/etc/php-fpm.d|g' /usr/local/etc/php-fpm.conf && \
     sed -i 's|/usr/local/usr/local|/usr/local|g' /usr/local/etc/php-fpm.conf
 
@@ -118,7 +118,7 @@ RUN echo "=== VERIFYING PHP-FPM CONFIGS ===" && \
     ls -la /usr/local/etc/php-fpm.conf && \
     ls -la /usr/local/etc/php-fpm.d/ && \
     echo "=== PHP-FPM.CONF CONTENT ===" && \
-    cat /usr/local/etc/php-fpm.conf | grep -A 2 "include"
+    cat /usr/local/etc/php-fpm.conf
 
 # Проверка конфигурации PHP-FPM
 RUN php-fpm -t
